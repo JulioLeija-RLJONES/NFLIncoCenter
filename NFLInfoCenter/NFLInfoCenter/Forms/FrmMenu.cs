@@ -38,7 +38,12 @@ namespace NFLInfoCenter.Forms
             prompt.BackColor = backColor;
 
             setupToolTips();
-   
+
+            if (!isDebugMode())
+            {
+                labelVersion.Text = System.Deployment.Application.ApplicationDeployment.CurrentDeployment.CurrentVersion.ToString();
+            }
+
         }
         public void setupToolTips()
         {
@@ -195,6 +200,7 @@ namespace NFLInfoCenter.Forms
             resizeLayout();
             setLocation();
 
+
             printme(msg_nottype, "welcome to nfl info center.");
          
 
@@ -226,8 +232,8 @@ namespace NFLInfoCenter.Forms
 
                 }
             }
+            MsgTypes.printme(msg_failure, "is debug mode: " + isDebugMode().ToString(), this);
 
-           
 
         }
         private void AppMenu_Resize(object sender, EventArgs e)
@@ -281,6 +287,19 @@ namespace NFLInfoCenter.Forms
 
 
         #region Debug
+       public bool isDebugMode()
+        {
+            if (Debugger.IsAttached)
+            {
+                // Since there is a debugger attached, assume we are running from the IDE
+                return true;
+            }
+            else
+            {
+                return false;
+                // Assume we aren't running from the IDE
+            }
+        }
         public void printme(int messageType, string message)
         {
             switch (messageType)

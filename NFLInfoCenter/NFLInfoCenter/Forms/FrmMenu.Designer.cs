@@ -180,9 +180,9 @@
             this.labelVersion.ForeColor = System.Drawing.SystemColors.MenuHighlight;
             this.labelVersion.Location = new System.Drawing.Point(315, 73);
             this.labelVersion.Name = "labelVersion";
-            this.labelVersion.Size = new System.Drawing.Size(64, 12);
+            this.labelVersion.Size = new System.Drawing.Size(43, 12);
             this.labelVersion.TabIndex = 11;
-            this.labelVersion.Text = "NFL TOOLS";
+            this.labelVersion.Text = "version";
             // 
             // FrmMenu
             // 

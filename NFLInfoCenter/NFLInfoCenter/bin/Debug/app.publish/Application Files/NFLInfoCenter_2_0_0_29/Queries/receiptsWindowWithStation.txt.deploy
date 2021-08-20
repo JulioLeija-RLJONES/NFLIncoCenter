@@ -1,0 +1,35 @@
+﻿SELECT TOP(30)* FROM(
+SELECT 
+	'ReceiptId' = DETAIL.RMAReceivingDetailID,
+	'SKU' = DETAIL.Material, 
+	'Qty' = DETAIL.ReceivedProductQuantity,
+	'Serial Number' = CASE WHEN DETAIL.SerialNumber IS NULL THEN ''
+						ELSE DETAIL.SerialNumber
+						END,
+	'RMA Number' = ORDERS.RMANumber,
+	'COO' = MATERIAL.COO,
+	'Tote' = TT.Name,
+	'Channel' = OT.Name,
+	'Disposition' = DISPOSITION.NAME,
+	'Employee' =  EMPLOYEE.UserName,
+	'Scan Time' =  DATEADD(HOUR,
+						 CAST(
+							REVERSE(PARSENAME(REPLACE(REVERSE(
+							REVERSE(PARSENAME(REPLACE(REVERSE(DETAIL.CreatedOn AT TIME ZONE 'Mountain Standard Time'), ' ', '.'), 4)) 
+							), ':', '.'), 1)) 
+							AS INT)
+					,DETAIL.CreatedOn),
+	'RMAType' = ot.OrderTypeID,
+	'Station' = STATION.Name
+FROM dbo.tbl_JobManage_RMA_Receiving_Detail DETAIL
+	INNER JOIN dbo.tbl_JobManage_RMA_Receiving RECEIVING ON RECEIVING.RMAReceivingID = DETAIL.RMAReceivingID
+	INNER JOIN dbo.tbl_JobManage_Orders ORDERS ON ORDERS.OrderId = RECEIVING.OrderId
+	INNER JOIN dbo.tbl_Master_Material_SerialNumber MATERIAL ON MATERIAL.MaterialId = DETAIL.MaterialId
+	INNER JOIN dbo.tbl_JobManage_Tote TT ON TT.ToteId = DETAIL.ToteId
+	INNER JOIN dbo.tbl_Master_OrderType OT ON OT.OrderTypeId = ORDERS.OrderTypeId
+	INNER JOIN dbo.tbl_Master_DispositionCode DISPOSITION ON DISPOSITION.DispositionCodeID = DETAIL.DispositionCodeID
+	INNER JOIN dbo.tbl_Master_User EMPLOYEE ON EMPLOYEE.UserID = DETAIL.CreatedBy
+	INNER JOIN dbo.tbl_Master_Station STATION ON STATION.StationID = DETAIL.StationId
+) AS REPORT
+WHERE REPORT.Station = '{0}'
+ORDER BY REPORT.ReceiptId DESC

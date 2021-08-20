@@ -78,16 +78,20 @@ namespace NFLInfoCenter.Classes
   
         public void printUnitLabel(Receipt receipt)
         {
+            Console.WriteLine("10 printUnitLabel: sku " + receipt.Sku + " qty " +  receipt.Qty);
             if(receipt != null)
             {
                 set_receipt(receipt);
-                printer.DocumentName = "unit_label_" + receipt.Id.ToString();
+                Console.WriteLine("11.1 class receipt set: sku " + this.receipt.Sku + " qty " + this.receipt.Qty);
+;               printer.DocumentName = "unit_label_" + receipt.Id.ToString();
+                Console.WriteLine("12 document name set: " + printer.DocumentName);
+                Console.WriteLine("13 calling printer print event");
                 printer.Print();
-
+                Console.WriteLine("14 finishing printUnitLabel");
             }
             else
-            {
-                MsgTypes.printme(MsgTypes.msg_failure, "receipt is null: ", commingFrom);
+            {                
+                Console.WriteLine("11.2 receipt was null.");
             }
         }
 
@@ -104,17 +108,19 @@ namespace NFLInfoCenter.Classes
                
             }
         }
-
+         
         public bool print(object sender, System.Drawing.Printing.PrintPageEventArgs e)
         {
-
+            Console.WriteLine("20 Staring print method inside Printer class");
             if (printer.DocumentName.Contains("tally"))
             {
+                Console.WriteLine("21.1 Error tally label detected.");
                 int item = Int32.Parse(printer.DocumentName.Split('_')[2].ToString());    
                 printTallyLabelDocument(sender, e, item); 
             }
             else
             {
+                Console.WriteLine("21.2 unit label detected.");
                 printUnitLabelDocument(sender, e);
             }
 
@@ -194,6 +200,7 @@ namespace NFLInfoCenter.Classes
         }
         public void printUnitLabelDocument(object sentder, System.Drawing.Printing.PrintPageEventArgs e)
         {
+            Console.WriteLine("22 Starting Label design");
             //try
             //{
             //Setting barcode creator
@@ -307,6 +314,7 @@ namespace NFLInfoCenter.Classes
             y = 0;
             e.Graphics.DrawString("Date Printed: " + DateTime.Now, printFont, brush, new System.Drawing.Point(x, y + (spacer * 1)), sf);
 
+            Console.WriteLine("22 Label drawing completed.");
 
             //}
             //catch(Exception ex)

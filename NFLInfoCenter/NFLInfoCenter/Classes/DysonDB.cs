@@ -218,8 +218,8 @@ namespace NFLInfoCenter.Classes
             string sql = Queries.getQuery("dyson_getPreReceiptsWithStation");
             sql = String.Format(sql, station);
             var rows = ExecuteReader(sql);
-            Console.WriteLine("SQL = ");
-            Console.WriteLine(sql);
+           
+            
             foreach (var data in rows)
             {
                 prereceipt = new PreReceipts();
@@ -234,7 +234,7 @@ namespace NFLInfoCenter.Classes
                 prereceipt.Item = Int32.Parse(data.FieldValues[8].ToString());
                 list.Add(prereceipt);
             }
-            Console.WriteLine("contento rows: " + list.Count);
+            
             return list;
         }
         public List<string[]> getRMAReceipts(string rma)
@@ -272,6 +272,40 @@ namespace NFLInfoCenter.Classes
             else
             {
                 MsgTypes.printme(MsgTypes.msg_failure, "the serial number has no records at receiving stations.", commingFrom);
+            }
+            return datalist;
+        }
+        /*
+         * Overload
+         * Functionality: returns a list of Receipt objects related with given RMA
+         * Parameters:
+         * rma: search criteria.
+         * getObject: overload
+         */
+        public List<Receipt> getRMAReceipts(string rma,bool getObject = false)
+        {
+            List<Receipt> datalist = new List<Receipt>();
+            string sql = getQuery("dyson_getRMAReceipts");
+            sql = string.Format(sql, rma);
+            var rows = ExecuteReader(sql);
+            if(rows.Count > 0){
+                foreach(var data in rows)
+                {
+                    Receipt r = new Receipt();
+                    r.Tote = data.FieldValues[0].ToString();
+                    r.Sku = data.FieldValues[1].ToString();
+                    r.Qty = Int32.Parse(data.FieldValues[2].ToString());
+                    r.RMANumber = data.FieldValues[3].ToString();
+                    r.channel = data.FieldValues[4].ToString();
+                    r.station = data.FieldValues[5].ToString();
+                    r.employee = data.FieldValues[6].ToString();
+                    r.COO = data.FieldValues[7].ToString();
+                    r.disposition = data.FieldValues[8].ToString();
+                    r.scanTime = data.FieldValues[10].ToString();
+                    r.SerialNumber = data.FieldValues[11].ToString();
+                    r.Id = Int32.Parse(data.FieldValues[12].ToString());
+                    datalist.Add(r);
+                }
             }
             return datalist;
         }
@@ -377,7 +411,7 @@ namespace NFLInfoCenter.Classes
         #region SupportFunctions
         private string getQuery(string name)
         {
-            //Console.WriteLine("query name: " + name);
+            
             try
             {
                 //string[] files = Directory.GetFiles(Directory.GetCurrentDirectory() + "\\Queries\\");
@@ -387,13 +421,13 @@ namespace NFLInfoCenter.Classes
                 path = path.Replace("NFLInfoCenter.exe","");
                 
                 
-                Console.WriteLine(" >>>>>>>>>>>>>>> "+ path + "\\Queries\\");
+                
                 string[] files = Directory.GetFiles(path + "\\Queries\\");
                 string sql = "";
 
                 foreach (string file in files)
                 {
-                    //Console.WriteLine("file name: " + file.ToString());
+                    
                     if (file.Contains(name))
                     {
                         sql = System.IO.File.ReadAllText(file);
@@ -405,15 +439,14 @@ namespace NFLInfoCenter.Classes
                 }
                 else
                 {
-                    //Console.WriteLine("query obtained");
+                    
                 }
-                //Console.WriteLine(sql);
+                
 
                 return sql;
             }
             catch(System.IO.DirectoryNotFoundException ex)
             {
-                Console.WriteLine("query obtained");
                 return null;
             }
           

@@ -1,0 +1,69 @@
+﻿-- Query name: Flexlink MSFT Hourly Receiving V1
+-- V1: new query
+SELECT * FROM (
+SELECT 
+	'Hour' = DATEPART(HOUR,DATEADD(HOUR,-6,CAST(UNIT.ModifiedOn as smalldatetime))),
+	'UnitID' =UNIT.UnitId,
+	'Carrier' = CARRIER.Name,
+	'Arriving Channel' = CHANNEL.Name ,
+	DOCK.TrackingNumber,
+	'Date Docked' = DATEADD(HOUR,-6,DOCK.CreatedOn),
+	'Docking User' = MU_DOCK.UserName,
+	'Serial Number' = UNIT.SerialNumber,
+	'Received Date'  = DATEADD(HOUR,-6,UNIT.ModifiedOn),
+	'UNIT ModifiedOn'  = DATEADD(HOUR,-6,UNIT.ModifiedOn),
+	'ORDER ModifiedOn' = DATEADD(HOUR,-6,ORDERS.ModifiedOn),
+	'Disposition Code'= DISPOSITION.DispositionCode,
+	'Receiving User'=MU_SN.UserName,
+	'Receiving Site' = LS.StoreName,
+	'ReceivingSiteId' = LS.LocalStoreID,
+	'Order Number' = ORDERS.OrderNumber,
+	'Order Type' = OT.Name,
+	'OrderTypeId' = OT.OrderTypeID,
+	'Project' = UNIT.Project,
+	'Family'= FAMILY.Name,
+
+	UNIT.IsActive
+
+
+
+FROM dbo.tbl_JobManage_Docking DOCK
+	-- Table 1 Pulling Channel where Tracking arrived.
+	LEFT OUTER JOIN dbo.tbl_Master_Channel CHANNEL ON DOCK.ChannelID = CHANNEL.ChannelID
+	-- Table 2 Addinb Tracking Mapping Table to trace serial number
+	LEFT OUTER JOIN dbo.tbl_jobmanage_TrackingNumber_Map JMTM ON DOCK.DockingID = JMTM.DockingID
+	-- Table 4 Adding Receiving Site
+	LEFT OUTER JOIN dbo.tbl_Master_LocalStore LS ON DOCK.LocalStoreID = LS.LocalStoreID
+	-- Table 5 Adding User that performed Docking to Tracking
+	LEFT OUTER JOIN dbo.tbl_Master_User MU_DOCK ON DOCK.CreatedBy = MU_DOCK.UserID
+	-- Table 6 Adding Carrier registered at Dock
+	LEFT OUTER JOIN dbo.tbl_Master_Carrier CARRIER ON CARRIER.CarrierID = DOCK.CarrierID
+	-- Table 7 Adding mapping table to trace Order
+	LEFT OUTER JOIN dbo.tbl_JobManage_Unit_ServiceJob_Repair_Map REPAIRMAP ON JMTM.ServiceJobID = REPAIRMAP.ServiceJobID
+	-- Table 8 Adding Unit table to obtain serial number
+	LEFT OUTER JOIN dbo.tbl_JobManage_Unit UNIT ON REPAIRMAP.UnitID = UNIT.UnitID
+	-- Table 9 Adding User that performed receiving. 
+	LEFT OUTER JOIN dbo.tbl_Master_User MU_SN ON MU_SN.UserID = UNIT.ModifiedBy
+	-- Table 10 Adding mapping table to trace Order and Order Type
+	LEFT OUTER JOIN tbl_JobManage_ServiceJob SERVICEJOB ON SERVICEJOB.ServiceJobID = REPAIRMAP.ServiceJobID
+	-- Table 11 Adding Delivery Order Table
+	LEFT OUTER JOIN dbo.tbl_JobManage_DeliveryOrder ORDERS ON ORDERS.DeliveryOrderID = SERVICEJOB.DeliveryOrderID
+	-- Table 12 Adding Order Type
+	LEFT OUTER JOIN dbo.tbl_Master_OrderType OT ON OT.OrderTypeID = ORDERS.OrderTypeID
+	-- Tabel 13 Adding Disposition ID
+	LEFT OUTER JOIN dbo.tbl_master_Disposition DISPOSITION ON DISPOSITION.DispositionID = UNIT.DispositionID
+	-- Table 14 Adding Part Master
+	LEFT OUTER JOIN dbo.tbl_Master_Part PARTMASTER ON PARTMASTER.PartId = UNIT.PartID
+	-- Table 14 Adding Family Table
+	LEFT OUTER JOIN dbo.tbl_Master_PartFamily FAMILY ON FAMILY.PartFamilyId = PARTMASTER.PartFamilyId
+) AS REPORT
+WHERE
+-->> Filtering receipts of the current Day
+REPORT.[UNIT ModifiedOn] BETWEEN DATEADD(DAY,0,CAST(DATEADD(HOUR,-6,GETDATE()) AS DATE)) AND DATEADD(DAY,1,CAST(DATEADD(HOUR,-6,GETDATE()) AS DATE))
+AND REPORT.[ORDER ModifiedOn] BETWEEN DATEADD(DAY,0,CAST(DATEADD(HOUR,-6,GETDATE()) AS DATE)) AND DATEADD(DAY,1,CAST(DATEADD(HOUR,-6,GETDATE()) AS DATE))
+-->> Filtering Current Hour filter
+AND DATEPART(HOUR,CAST(REPORT.[UNIT ModifiedOn] as smalldatetime)) = DATEPART(HOUR,DATEADD(DAY,0,CAST(DATEADD(HOUR,-6,GETDATE()) AS smalldatetime)))  
+-->> Filtering Site El Paso
+AND REPORT.ReceivingSiteId = 2 
+-->> Filtering specific workstation
+AND REPORT.[Receiving User] = '{0}'

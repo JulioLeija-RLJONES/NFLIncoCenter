@@ -1,13 +1,9 @@
-﻿using System;
+﻿using NFLInfoCenter.Classes;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using NFLInfoCenter.Classes;
 
 namespace NFLInfoCenter.Forms
 {
@@ -106,6 +102,8 @@ namespace NFLInfoCenter.Forms
              */
             setPrinterName(p.printerName);
 
+            
+
         }
 
 
@@ -139,19 +137,17 @@ namespace NFLInfoCenter.Forms
 
         private void textBoxRMA2_KeyDown(object sender, KeyEventArgs e)
         {
-
-            
-
             if (e.KeyCode == Keys.Enter)
             {
                 if (station.name.Contains("Pre Receiving") ||
                     station.name.Contains("Leija"))
                 {
-                    ManualPrint(get_rma_2());
+                    ManualPrint_PreReceipts(get_rma_2());
                 }
                 else
                 {
-                    
+                    Console.WriteLine("1 receipts manual printing");
+                    ManualPrint_Receipts(get_rma_2());
                 }
 
             }
@@ -161,8 +157,15 @@ namespace NFLInfoCenter.Forms
             List<Object> selectedReceipts = getSelectedPrints();
             MsgTypes.printme(MsgTypes.msg_success, "printing selected reciepts. Qty: " + selectedReceipts.Count, this);
             Console.WriteLine("printing selected reciepts. Qty: " + selectedReceipts.Count);
-            ManualPrint(get_rma());
-            //addAllReceipts(selectedReceipts);
+            if(selection.Contains("Pre Receiving") || selection.Contains("Leija"))
+            {
+                ManualPrint_PreReceipts(get_rma());
+            }
+            else
+            {
+                ManualPrint_Receipts(get_rma());
+            }
+            
         }
         private void init_receiptDatagridView()
         {
@@ -311,6 +314,7 @@ namespace NFLInfoCenter.Forms
                 if(checkBoxActivatePrints.Checked & checkBoxAutomatic.Checked)
                 {
                     popOldestQueue();
+                    
                 }
             }
             catch (Exception ex)
@@ -350,63 +354,38 @@ namespace NFLInfoCenter.Forms
         }
         private void printer_PrintPage(object sender, System.Drawing.Printing.PrintPageEventArgs e)
         {
+            Console.WriteLine("15 Starting Print Page event");
+
             if(getSelectedStation().Contains("Pre Receiving") || 
                 getSelectedStation().Contains("Leija"))
-
             {
+                Console.WriteLine("16.1 Error detected PreReceiving print task");
                 PreReceipts fifo = new PreReceipts();
-
                     foreach (PreReceipts item in prereceiptList)
                     {
-                        Console.WriteLine("items in queue = " + listViewQueue.Items.Count);
-                        Console.WriteLine("comparing: " + item.Id.ToString() + " == " +
-                        listViewQueue.Items[0].Text + " = " +
-                        (item.Id.ToString() == listViewQueue.Items[0].Text).ToString());
-
-
                         if (item.Id.ToString() == listViewQueue.Items[0].Text)
                         {
                             fifo = item;
                         }
                     }
-
-
                     if (p.print(sender, e) & fifo != null)
                     {
                         printedPreceipts.Add(fifo);
-
                         listViewQueue.Items.RemoveAt(listViewQueue.Items[0].Index);
                     }
-                    else
-                    {
-         
-                    }
-        
-
-
-
-
             }else
             {
+                Console.WriteLine("16.2 Receipt Print task detected");
                 Receipt fifo = receiptList.Find(x => x.Id == Int32.Parse(listViewQueue.Items[0].Text));
+                Console.WriteLine("17 setting fifo: " + fifo.Sku + " " + fifo.Qty);
                 if (p.print(sender, e) & fifo != null)
                 {
+                    Console.WriteLine("18 print method in Printer class completed.");
                     printedReceipts.Add(fifo);
-                    //MsgTypes.printme(MsgTypes.msg_success, "print sent: " +
-                    //fifo.ToString(), this);
-                    
-                }
-                else
-                {
-                    //Keeping FIFO item.
-                    //MsgTypes.printme(MsgTypes.msg_success, "could not print: " +
-                    //fifo.ToString(), this);
+                    listViewQueue.Items.RemoveAt(listViewQueue.Items[0].Index);
+                    Console.WriteLine("19 fifo added to printedReceipts " + fifo.Sku);
                 }
             }
-
-            //listViewQueue.Items.RemoveAt(listViewQueue.Items[0].Index);
-
-
         }
 
 
@@ -585,11 +564,26 @@ namespace NFLInfoCenter.Forms
                 MsgTypes.printme(MsgTypes.msg_failure, "there is no record of sn = " + get_rma() + ", at prereceiving", this);
             }
         }
-        private void ManualPrint(string rma)
+        private void ManualPrint_Receipts(string rma)
+        {
+            timer1.Enabled = false;
+            List<Receipt> list = dysonData.getRMAReceipts(rma,true);
+            Console.WriteLine("2 list of receipts obtained: " + list.Count + " recepits pulled.");
+
+            if (list.Count > 0)
+            {
+                addAllReceipts(list);
+                popOldestQueue();
+            }
+            Console.WriteLine("9 completing ManualPrint_Receipts.");
+            textBoxRMA2.Clear();
+            timer1.Enabled = true;
+        }
+        private void ManualPrint_PreReceipts(string rma)
         {
             timer1.Enabled = false;
             List<PreReceipts> list = dysonData.getRMAPreReceipts(rma, true);
-            Console.WriteLine("rma " + get_rma_2());
+            
             if (list.Count > 0)
             {
                 PreReceipts p = new PreReceipts();
@@ -602,7 +596,14 @@ namespace NFLInfoCenter.Forms
             }
             textBoxRMA2.Clear();
             timer1.Enabled = true;
-            //MsgTypes.printme(MsgTypes.msg_success, "manual print sent.",this);
+            
+        }
+        private void popAllQueue()
+        {
+            foreach(string item in listViewQueue.Items)
+            {
+                popOldestQueue();
+            }
         }
         private string popOldestQueue()
         {
@@ -610,15 +611,13 @@ namespace NFLInfoCenter.Forms
             if (listViewQueue.Items.Count > 0)
             {
                 oldestItem = listViewQueue.Items[0].Text;
-                //MsgTypes.printme(MsgTypes.msg_success, "oldestItem: " + oldestItem,this);
-                Console.WriteLine("oldestItem: " + oldestItem);
-
+                Console.WriteLine("5 oldestItem: " + oldestItem);
                 //Pre Receiving station is selected
                if(getSelectedStation().Contains("Pre Receiving") ||
                     getSelectedStation().Contains("Leija"))
                 {
+                    Console.WriteLine("6 Error Popping from PreReceiving Station");
                     PreReceipts r = new PreReceipts();
-
                     foreach(PreReceipts item in prereceiptList)
                     {
                         if(item.Id.ToString() == oldestItem.ToString())
@@ -626,50 +625,38 @@ namespace NFLInfoCenter.Forms
                             r = item;
                         }
                     }
-                    
-
-
                     if(r.Id != 0) 
                     {
                         for(int i = 1; i <= r.Item; i++)
                         {
                             p.printTallyLabel(r,i);
-                            
                             if(i != r.Item)
                             {
-                                
                                 addAllReceipts(new List<PreReceipts>(){r});
-                                //listViewQueue.Items.Add(r.Id.ToString());
                             }
-                            //MsgTypes.printme(MsgTypes.msg_success, "print sent: " + r.ToString(), this);
                             Console.WriteLine("print sent: " + r.ToString());
-                            //listViewQueue.Items.RemoveAt(listViewQueue.Items[0].Index);
                         }
                     }
-                    else
-                    {
-                        //MsgTypes.printme(MsgTypes.msg_failure, "could not find preceipt: " + listViewQueue.Items[0].Text, this);
-                    }
-                        
                 }
-
-
                //Receiving station is selected
                 else
                 {
+                    Console.WriteLine("6 Popping from Receiving Station");
                     Receipt r = receiptList.Find(x => x.Id.ToString() == oldestItem);
+                    Console.WriteLine("7 after search in lists, found receipt: " + r.ToString());
                     if (r != null)
                     {
+                        Console.WriteLine("8 calling print with receipt: " + r.ToString());
                         p.printUnitLabel(r);
-                        MsgTypes.printme(MsgTypes.msg_success, "print sent: " + r.ToString(), this);
+                        Console.WriteLine("8.1 print sent: " + r.ToString(), this);
                     }
                     else
                     {
-                        MsgTypes.printme(MsgTypes.msg_failure, "could not find receipt: " + listViewQueue.Items[0].Text, this);
+                        Console.WriteLine("7.2 could not find receipt: " + listViewQueue.Items[0].Text);
                     }
                 }
 
-
+                Console.WriteLine("8 completing pop returning string: " + oldestItem);
                 return oldestItem;
             }
             return null;
@@ -725,10 +712,12 @@ namespace NFLInfoCenter.Forms
         }
         private void addAllReceipts(List<Receipt> list)
         {
+            Console.WriteLine("3 adding receipts to receiptList and listViewQueue");
             foreach (Receipt r in list)
             {
                 receiptList.Add(r);
-                //listViewQueue.Items.Add(r.Id.ToString());
+                listViewQueue.Items.Add(r.Id.ToString());
+                Console.WriteLine("4 receipt " + r.ToString() + " added");
             }
         }
         private void addAllPreReceipts(List<PreReceipts> list)
