@@ -1,0 +1,28 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="NFLInfoCenter.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="Flexlink_AirconnectionString" Type="(Connection string)" Scope="Application">
+      <DesignTimeValue Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;SerializableConnectionString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;ConnectionString&gt;Data Source=Airprodsec.database.windows.net;Initial Catalog=Flexlink_Air;User ID=ELPreader;Password=h@2e)$YG&lt;/ConnectionString&gt;
+&lt;/SerializableConnectionString&gt;</DesignTimeValue>
+      <Value Profile="(Default)">Data Source=Airprodsec.database.windows.net;Initial Catalog=Flexlink_Air;User ID=ELPreader;Password=h@2e)$YG</Value>
+    </Setting>
+    <Setting Name="Flexlink_MicrosoftconnectionString" Type="(Connection string)" Scope="Application">
+      <DesignTimeValue Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;SerializableConnectionString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;ConnectionString&gt;Data Source=prdmsftsec.database.windows.net;Initial Catalog=Flexlink_MS_PROD;User ID=ELPreader;Password=4Ug:Zb4G&lt;/ConnectionString&gt;
+&lt;/SerializableConnectionString&gt;</DesignTimeValue>
+      <Value Profile="(Default)">Data Source=prdmsftsec.database.windows.net;Initial Catalog=Flexlink_MS_PROD;User ID=ELPreader;Password=4Ug:Zb4G</Value>
+    </Setting>
+    <Setting Name="db_elptestConnectionString" Type="(Connection string)" Scope="Application">
+      <DesignTimeValue Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;SerializableConnectionString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;ConnectionString&gt;Data Source=elpuatsqlserver.database.windows.net;Initial Catalog=db_elptest;User ID=azureuser;Password=elp.1234&lt;/ConnectionString&gt;
+  &lt;ProviderName&gt;System.Data.SqlClient&lt;/ProviderName&gt;
+&lt;/SerializableConnectionString&gt;</DesignTimeValue>
+      <Value Profile="(Default)">Data Source=elpuatsqlserver.database.windows.net;Initial Catalog=db_elptest;User ID=azureuser;Password=elp.1234</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

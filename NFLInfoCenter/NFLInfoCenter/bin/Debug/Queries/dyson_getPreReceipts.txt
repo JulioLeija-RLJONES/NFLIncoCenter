@@ -1,0 +1,20 @@
+﻿SELECT TOP(30)* FROM(
+SELECT 
+	'Id' =PRERECEIVING.RMAPreReceivingID,
+	'RMA' = ORDERS.RMANumber,
+	'TrackingNumber' = PRERECEIVING.TrackingNumber,
+	'Pallets' = PRERECEIVING.NoOfPalletsReceived,
+	'Boxes' = PRERECEIVING.NoOfPiecesReceivedD,
+	'PreReceiptedOn' = DATEADD(HOUR,-6,PRERECEIVING.CreatedOn),
+	'Station' = EMPLOYEE.UserName,
+	'Channel' = OT.Name,
+	--'Items' = ROW_NUMBER() OVER (PARTITION BY ORDERS.RMANumber ORDER BY PRERECEIVING.RMAPreReceivingID ASC),
+	'Items' = PRERECEIVING.NoOfPalletsReceived +  PRERECEIVING.NoOfPiecesReceivedD,
+	ORDERS.IsMisMatchRMA
+FROM dbo.tbl_JobManage_RMA_PreReceiving PRERECEIVING
+	INNER JOIN dbo.tbl_JobManage_Orders ORDERS ON ORDERS.OrderId = PRERECEIVING.OrderID
+	INNER JOIN dbo.tbl_Master_User EMPLOYEE ON EMPLOYEE.UserID = PRERECEIVING.CreatedBy
+	INNER JOIN dbo.tbl_Master_OrderType OT ON OT.OrderTypeID = ORDERS.OrderTypeID
+) AS REPORT
+WHERE REPORT.IsMisMatchRMA = 0
+ORDER BY REPORT.Id DESC

@@ -1,0 +1,18 @@
+Declare @criteria as NVARCHAR(50)
+SET @criteria = '{0}'
+SELECT * FROM (
+SELECT 
+	UFILE.FileID,
+	'SerialNumber' = '',
+	ORDERS.RMANumber,
+	UFILE.BlobFileURL,
+	'CreatedOn' = DATEADD(HOUR,-6,UFILE.CreatedOn),
+	UFILE.BlobFileName,
+	UFILE.ParentType
+FROM dbo.tbl_JobManage_File UFILE 
+	INNER JOIN dbo.tbl_JobManage_Orders ORDERS ON ORDERS.OrderId   = UFILE.ParentID
+) 
+AS REPORT
+WHERE 
+REPORT.ParentType = 'RMAReceiving' 
+AND REPORT.BlobFileName LIKE CONCAT('%',@criteria,'%')

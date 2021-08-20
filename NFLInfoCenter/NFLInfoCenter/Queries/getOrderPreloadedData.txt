@@ -1,0 +1,9 @@
+﻿DECLARE @ORDER_SEARCH AS NVARCHAR(50)
+SET @ORDER_SEARCH = '{0}'
+SELECT 
+	'Pre Loaded Order' = ORDERS.RMANumber,
+	'Tracking' = PRERECEIVING.TrackingNumber,
+	'Pre Received On' = DATEADD(HOUR,-6,PRERECEIVING.CreatedOn)
+FROM dbo.tbl_JobManage_Orders ORDERS
+	INNER JOIN dbo.tbl_JobManage_RMA_PreReceiving PRERECEIVING ON PRERECEIVING.OrderID = ORDERS.OrderId
+WHERE ORDERS.RMANumber = @ORDER_SEARCH
