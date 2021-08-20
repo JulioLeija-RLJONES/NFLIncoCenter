@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Deployment.Application;
 using System.IO;
 using System.Data.SqlClient;
 using System.Data;
@@ -12,15 +9,29 @@ using System.Configuration;
 
 namespace NFLInfoCenter.Classes
 {
+    /*
+     * This class is meant to manage the data querying from:
+     *      1.- Flexlink Air -  database:Flexlink_Air server:Airprodsec.database.windows.net
+     *      2.- NFL          -  database:db_elptest   server: elpuatsqlserver.database.windows.net
+     */
     class DysonDB : SqlHelper
     {
-
         private System.Windows.Forms.Form commingFrom;
+        /*
+         * Parameters:
+         * commingFrom: receives the form that called the creation of this form in order to be able
+         *              to return to commingFrom form
+         */
         public DysonDB(System.Windows.Forms.Form commingFrom)
           : base("dyson")
         {
             this.commingFrom = commingFrom;
         }
+        /*
+         * Functionality: queries flexlink database searching for any pre loaded order containing given serial number
+         * Parameters:
+         * serialNumber: search criteria.
+         */
         public List<string[]> getPreLoadedData(string serialNmber)
         {
             List<string[]> datalist = new List<string[]>();
@@ -42,28 +53,22 @@ namespace NFLInfoCenter.Classes
             }
             return datalist;
         }
+        /*
+         * Functionality: queries flexlink database to pull data of active receipts related to given serial number.
+         * Parameters:
+         * serialNumber: search criteria.
+         */
         public List<string[]> getReceiptedData(string serialNumber)
         {
             List<string[]> datalist = new List<string[]>();
             string sql = getQuery("getReceiptData");
-            Console.WriteLine(serialNumber);
-
-
             if (serialNumber.Contains(","))
             {
                 string[] serialNumbers = serialNumber.Split(',');
-
                 serialNumber = String.Join("','",serialNumbers);
-
-               
             }
-            Console.WriteLine("searching batch");
-            Console.WriteLine(serialNumber);
-
             sql = string.Format(sql, serialNumber);
-            Console.WriteLine(sql);
             var rows = ExecuteReader(sql);
-
             if (rows.Count > 0)
             {
                 foreach (var data in rows)
@@ -81,6 +86,9 @@ namespace NFLInfoCenter.Classes
             }
             return datalist;
         }
+        /*
+         * Functionality: 
+         */
         public List<string[]> getOrderPreLoadedData(string orderNumber)
         {
             List<string[]> datalist = new List<string[]>();
