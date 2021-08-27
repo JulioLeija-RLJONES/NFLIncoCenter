@@ -174,7 +174,7 @@
             // 
             // timer1
             // 
-            this.timer1.Interval = 5000;
+            this.timer1.Interval = 1000;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
             // label3
@@ -512,6 +512,7 @@
             this.textBoxRMA2.Size = new System.Drawing.Size(151, 22);
             this.textBoxRMA2.TabIndex = 35;
             this.textBoxRMA2.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBoxRMA2_KeyDown);
+            this.textBoxRMA2.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBoxRMA2_KeyPress);
             // 
             // FrmReceiptsPrinter
             // 

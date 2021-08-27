@@ -1,2 +1,0 @@
-﻿SELECT * FROM dbo.tbl_DysonMaster_Station
-WHERE HostName = '{0}'

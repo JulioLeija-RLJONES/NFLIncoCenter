@@ -1,4 +1,0 @@
-﻿--SELECT * FROM dbo.tbl_master_station
-SELECT STATION.StationID,STATION.Name FROM dbo.tbl_Master_Station STATION
-UNION all
-SELECT EMPLOYEE.UserID,EMPLOYEE.UserName FROM dbo.tbl_Master_User EMPLOYEE WHERE UserName LIKE '%Pre Receiving%'

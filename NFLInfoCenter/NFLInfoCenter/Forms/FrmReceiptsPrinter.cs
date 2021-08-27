@@ -573,7 +573,7 @@ namespace NFLInfoCenter.Forms
             if (list.Count > 0)
             {
                 addAllReceipts(list);
-                popOldestQueue();
+                popAllQueue();  // --> Change: from popOldestQueue to popAllQueue()
             }
             Console.WriteLine("9 completing ManualPrint_Receipts.");
             textBoxRMA2.Clear();
@@ -600,7 +600,7 @@ namespace NFLInfoCenter.Forms
         }
         private void popAllQueue()
         {
-            foreach(string item in listViewQueue.Items)
+            foreach(ListViewItem item in listViewQueue.Items)
             {
                 popOldestQueue();
             }
@@ -952,8 +952,12 @@ namespace NFLInfoCenter.Forms
             buttonManualPop.Visible = true;
         }
 
+
         #endregion
 
+        private void textBoxRMA2_KeyPress(object sender, KeyPressEventArgs e)
+        {
 
+        }
     }
 }
