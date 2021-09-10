@@ -13,7 +13,13 @@ namespace NFLInfoCenter.Classes
         public static int msg_failure = 2;
         public static int msg_nottype = 0;
         
-
+        /// <summary>
+        /// Prints message to "prompt" (RichTextBox control) and adds messageType tag.
+        /// </summary>
+        /// <param name="messageType"></param>
+        /// <param name="message"></param>
+        /// <param name="sender"></param>
+        /// <param name="prompt"></param>
         public static void printme(int messageType, string message, System.Windows.Forms.Form sender, System.Windows.Forms.RichTextBox prompt = null)
         {
 
