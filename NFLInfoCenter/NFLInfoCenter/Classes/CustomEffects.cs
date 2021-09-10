@@ -12,10 +12,20 @@ namespace NFLInfoCenter.Classes
         {
             this.commingFrom = commingFrom;
         }
-        /*
-         * Functionality: changes backgroud image of picturebox control given the control name
-         * Note 1: uses image resoureces imported into the project.
-         */
+
+        /// <summary>
+        /// Changes backgroud image of picturebox control given the control name
+        /// <br/><br/> 
+        /// Remarks:
+        /// <br/> 
+        /// <list type="number">
+        /// <item>Uses images imported into the project.</item>
+        /// </list>
+        /// </summary>
+        /// <param name="form"></param>
+        /// <param name="sender"></param>
+        /// <param name="normalPictureName"></param>
+        /// <param name="higlightedPictureName"></param>
         public void hoverButtonEffect(System.Windows.Forms.Form form,
                                        System.Windows.Forms.PictureBox sender,
                                        string normalPictureName, string higlightedPictureName)
@@ -35,10 +45,18 @@ namespace NFLInfoCenter.Classes
                     break;
             }
         }
-        /*
-         * Functionality: changes backgroud image of picturebox control given the control name
-         * Note 1: uses image resources imported into the project.
-         */
+        /// <summary>
+        /// changes background image of picturebox control given the control name
+        /// Remarks:
+        /// <br/> 
+        /// <list type="number">
+        /// <item>Uses images imported into the project.</item>
+        /// </list>
+        /// </summary>
+        /// <param name="form"></param>
+        /// <param name="sender"></param>
+        /// <param name="normalPicture"></param>
+        /// <param name="higlightedPicture"></param>
         public void hoverButtonEffect(System.Windows.Forms.Form form,
                                   System.Windows.Forms.PictureBox sender,
                                   Bitmap normalPicture, Bitmap higlightedPicture)
@@ -46,9 +64,21 @@ namespace NFLInfoCenter.Classes
             sender.Image = higlightedPicture;
         }
         /*
-         * Functionality: resets the control to idle
+         * Functionality: 
          * Note 1: uses image resources imported into the project
         */
+        /// <summary>
+        /// resets the control to idle
+        /// Remarks:
+        /// <br/> 
+        /// <list type="number">
+        /// <item>Uses images imported into the project.</item>
+        /// </list>
+        /// </summary>
+        /// <param name="form"></param>
+        /// <param name="sender"></param>
+        /// <param name="normalPictureName"></param>
+        /// <param name="higlightedPictureName"></param>
         public void resetButtonColor(System.Windows.Forms.Form form,
                                        System.Windows.Forms.PictureBox sender,
                                        string normalPictureName, string higlightedPictureName)
@@ -72,6 +102,18 @@ namespace NFLInfoCenter.Classes
          * Functionality: resets the control to idle
          * Note 1: uses image resources imported into the project
         */
+        /// <summary>
+        ///  resets the control to idle
+        /// Remarks:
+        /// <br/> 
+        /// <list type="number">
+        /// <item>Uses images imported into the project.</item>
+        /// </list>
+        /// </summary>
+        /// <param name="form"></param>
+        /// <param name="sender"></param>
+        /// <param name="normalPicture"></param>
+        /// <param name="higlightedPicture"></param>
         public void resetButtonColor(System.Windows.Forms.Form form,
                                     System.Windows.Forms.PictureBox sender,
                                     Bitmap normalPicture, Bitmap higlightedPicture)

@@ -91,7 +91,6 @@ C:\Users\j.leija\source\git\NFLIncoCenter\NFLInfoCenter\NFLInfoCenter\bin\Debug\
 C:\Users\j.leija\source\git\NFLIncoCenter\NFLInfoCenter\NFLInfoCenter\bin\Debug\zxing.xml
 C:\Users\j.leija\source\git\NFLIncoCenter\NFLInfoCenter\NFLInfoCenter\bin\Debug\zxing.presentation.xml
 C:\Users\j.leija\source\git\NFLIncoCenter\NFLInfoCenter\NFLInfoCenter\bin\Debug\nl\PdfiumViewer.resources.dll
-C:\Users\j.leija\source\git\NFLIncoCenter\NFLInfoCenter\NFLInfoCenter\obj\Debug\NFLInfoCenter.csprojAssemblyReference.cache
 C:\Users\j.leija\source\git\NFLIncoCenter\NFLInfoCenter\NFLInfoCenter\obj\Debug\NFLInfoCenter.Forms.FrmCloseMenu.resources
 C:\Users\j.leija\source\git\NFLIncoCenter\NFLInfoCenter\NFLInfoCenter\obj\Debug\NFLInfoCenter.Forms.FrmDataView.resources
 C:\Users\j.leija\source\git\NFLIncoCenter\NFLInfoCenter\NFLInfoCenter\obj\Debug\NFLInfoCenter.Forms.FrmMenu.resources
@@ -106,3 +105,4 @@ C:\Users\j.leija\source\git\NFLIncoCenter\NFLInfoCenter\NFLInfoCenter\obj\Debug\
 C:\Users\j.leija\source\git\NFLIncoCenter\NFLInfoCenter\NFLInfoCenter\obj\Debug\NFLInfoCenter.csproj.CopyComplete
 C:\Users\j.leija\source\git\NFLIncoCenter\NFLInfoCenter\NFLInfoCenter\obj\Debug\NFLInfoCenter.exe
 C:\Users\j.leija\source\git\NFLIncoCenter\NFLInfoCenter\NFLInfoCenter\obj\Debug\NFLInfoCenter.pdb
+C:\Users\j.leija\source\git\NFLIncoCenter\NFLInfoCenter\NFLInfoCenter\obj\Debug\NFLInfoCenter.csproj.AssemblyReference.cache
