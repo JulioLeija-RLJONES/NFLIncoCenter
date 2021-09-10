@@ -11,19 +11,25 @@ namespace NFLInfoCenter.Classes
 {
     class UploadFilesDB : SqlHelper
     {
+        /// <summary>
+        /// Class handles high level SQL queries of Images and Files uploaded to flexlink.
+        /// </summary>
         public UploadFilesDB()
-          : base(ApplicationDeployment.IsNetworkDeployed ? "ProductionDatabase" : "DebugDatabase")
-        {
+          : base(ApplicationDeployment.IsNetworkDeployed ? "ProductionDatabase" : "DebugDatabase"){}
 
-        }
-
-        public Receipt getReceiptData(string serialNmber)
+        /// <summary>
+        /// Queries dyson flexlink database and pulls receipt data of the row matching the serial number
+        /// provided.
+        /// </summary>
+        /// <param name="serialNmber"></param>
+        /// <returns>A Receipt object containing data of the serial number.</returns>
+        public Receipt getReceiptData(string serialNumber)
         {
             Receipt unit;
            
 
             string sql = getQuery("getdata");
-            sql = string.Format(sql, serialNmber);
+            sql = string.Format(sql, serialNumber);
             Console.WriteLine("query formated: " + sql);
             var rows = ExecuteReader(sql);
 
@@ -59,7 +65,12 @@ namespace NFLInfoCenter.Classes
 
             return unit;
         }
-
+        /// <summary>
+        /// Queries dyson flexlink database and pulls data of PreReceipt matching the order number
+        /// provided.
+        /// </summary>
+        /// <param name="orderNumber"></param>
+        /// <returns>A PreReceipt object containing incoming data of the order number.</returns>
         public PreReceipts getPreReceiptData(string orderNumber)
         {
             PreReceipts prereciept;
@@ -91,24 +102,21 @@ namespace NFLInfoCenter.Classes
             }
                 return prereciept;
         }
+        /// <summary>
+        /// Queries dyson flexlink database and pulls all receipts generated during the current day.
+        /// </summary>
+        /// <returns>The List of Receipts performed during the current day.</returns>
         public async Task<List<Receipt>> getPlayList()
         {
             List<Receipt> playList = new List<Receipt>();
             Receipt unit;
-
             string sql = getQuery("playlist");
-
             string today = DateTime.Now.Date.ToString("yyyy/MM/dd");
             string tomorrow = DateTime.Now.Date.AddDays(1).ToString("yyyy/MM/dd");
             Console.WriteLine("date range: " + today.ToString() + " - " + tomorrow.ToString());
-
-
-            //sql = string.Format(sql, "2021-07-01", "2021-07-02");
             sql = string.Format(sql, today, tomorrow);
             Console.WriteLine("query for playlist:");
             Console.WriteLine(sql);
-
-
             var data = await ExecuteReaderAsync(sql);
 
             if (data.Count > 0)
@@ -131,7 +139,12 @@ namespace NFLInfoCenter.Classes
             }
                 return playList;
         }
-
+        /// <summary>
+        /// Gets a predefined SQL statement from a project file located in Queries folder.
+        /// 
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns>The SQL statement stored in the file named with name value.</returns>
         public string getQuery(string name)
         {
             //Console.WriteLine("query name: " + name);
