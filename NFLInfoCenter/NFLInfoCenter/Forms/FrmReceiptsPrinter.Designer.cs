@@ -512,7 +512,6 @@
             this.textBoxRMA2.Size = new System.Drawing.Size(151, 22);
             this.textBoxRMA2.TabIndex = 35;
             this.textBoxRMA2.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBoxRMA2_KeyDown);
-            this.textBoxRMA2.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBoxRMA2_KeyPress);
             // 
             // FrmReceiptsPrinter
             // 

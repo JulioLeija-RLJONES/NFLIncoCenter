@@ -120,7 +120,6 @@ namespace NFLInfoCenter.Forms
                 this.Show();
             }
         }
-
         private void textBoxRMA_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
@@ -128,13 +127,10 @@ namespace NFLInfoCenter.Forms
                 dataReceiptsView.Rows.Clear();
             }
         }
-
         private void textBoxRMA_TextChanged(object sender, EventArgs e)
         {
             dataReceiptsView.Rows.Clear();
         }
-
-
         private void textBoxRMA2_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
@@ -387,8 +383,6 @@ namespace NFLInfoCenter.Forms
                 }
             }
         }
-
-
         private void pictureBoxView_Click(object sender, EventArgs e)
         {
             
@@ -464,28 +458,35 @@ namespace NFLInfoCenter.Forms
         {
             return textBoxRMA2.Text;
         }
+        private void textBoxPrinterName_TextChanged(object sender, EventArgs e)
+        {
+            listViewQueue.Items.Clear();
+        }
+        private void comboBoxStation_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            listViewQueue.Items.Clear();
+            setSelection(comboBoxStation.Text);
+        }
         #endregion
 
         #region Logic
+        /// <summary>
+        /// Gets all selected rows in dataReceiptsView datagrid.
+        /// </summary>
+        /// <returns>A list of Objects (Receipt or PreReceipts) containing data from the selected dataReceiptsView datagridView.</returns>
         private List<Object> getSelectedPrints()
         {
             Receipt receipt;
             List<Object> re_list = new List<Object>();
             PreReceipts prereceipt;
             List<Object> pre_list = new List<Object>();
-
             string lt ="";
-
-
             foreach(DataGridViewRow row in dataReceiptsView.SelectedRows)
             {
                 Console.WriteLine("checking type: " + row.Cells[6].Value.ToString());
                 Console.WriteLine("row count: " + row.Cells.Count);
 
                 if(row.Cells.Count == 9)
-                //if (row.Cells[6].Value.ToString().Contains("Pre Receiving") ||
-                //    row.Cells[6].Value.ToString().Contains("Leija") ||
-                //    row.Cells[6].Value.ToString().Contains("Herrera")) 
                 {
                     prereceipt = new PreReceipts();
                     prereceipt.Id = Int32.Parse(row.Cells[0].Value.ToString());
@@ -531,6 +532,10 @@ namespace NFLInfoCenter.Forms
                 return re_list;
             }
         }
+        /// <summary>
+        /// Initializes dataReceiptsView as Receipt viewer and populates all receipts
+        /// found for RMA provided in textBoxRMA.
+        /// </summary>
         private void searchRMAReceiptsAction()
         {
             List<string[]> receiptedData = dysonData.getRMAReceipts(get_rma());
@@ -548,6 +553,10 @@ namespace NFLInfoCenter.Forms
                 MsgTypes.printme(MsgTypes.msg_failure, "there is no record of sn = " + get_rma() + ", at receiving", this);
             }
         }
+        /// <summary>
+        /// Initializes dataReceiptsView as PreReceipt viewer and populates all prereceipts
+        /// found for RMa provided in textBoxRMA.
+        /// </summary>
         private void searchRMAPreReceiptsAction()
         {
             List<string[]> receiptedData = dysonData.getRMAPreReceipts(get_rma());
@@ -564,6 +573,11 @@ namespace NFLInfoCenter.Forms
                 MsgTypes.printme(MsgTypes.msg_failure, "there is no record of sn = " + get_rma() + ", at prereceiving", this);
             }
         }
+        /// <summary>
+        /// Stops the automatic printing job (if active) and dequeues all items queued in listViewQueue.
+        /// Sends one print task per dequeued item. When done, reactivates automatic priting jobs.
+        /// </summary>
+        /// <param name="rma"></param>
         private void ManualPrint_Receipts(string rma)
         {
             timer1.Enabled = false;
@@ -575,10 +589,19 @@ namespace NFLInfoCenter.Forms
                 addAllReceipts(list);
                 popAllQueue();  // --> Change: from popOldestQueue to popAllQueue()
             }
+            else
+            {
+                MsgTypes.printme(MsgTypes.msg_failure, "there are no receipts done for rma " + rma, this);
+            }
             Console.WriteLine("9 completing ManualPrint_Receipts.");
             textBoxRMA2.Clear();
             timer1.Enabled = true;
         }
+        /// <summary>
+        /// Stops the automatic printing job (if active) and dequeues all items queued in listViewQueue.
+        /// Sends one print task per dequeued item. When done, reactivates automatic priting jobs.
+        /// </summary>
+        /// <param name="rma"></param>
         private void ManualPrint_PreReceipts(string rma)
         {
             timer1.Enabled = false;
@@ -598,6 +621,10 @@ namespace NFLInfoCenter.Forms
             timer1.Enabled = true;
             
         }
+        /// <summary>
+        /// Calls the dequeuing function one time per each item queued in the listViewQueue.
+        /// Efectively creating all pending print tasks.
+        /// </summary>
         private void popAllQueue()
         {
             foreach(ListViewItem item in listViewQueue.Items)
@@ -605,6 +632,10 @@ namespace NFLInfoCenter.Forms
                 popOldestQueue();
             }
         }
+        /// <summary>
+        /// Picks the oldest item inserted in listViewQueue and creates its print task, dequeuing the item.
+        /// </summary>
+        /// <returns></returns>
         private string popOldestQueue()
         {
             string oldestItem;
@@ -612,6 +643,7 @@ namespace NFLInfoCenter.Forms
             {
                 oldestItem = listViewQueue.Items[0].Text;
                 Console.WriteLine("5 oldestItem: " + oldestItem);
+
                 //Pre Receiving station is selected
                if(getSelectedStation().Contains("Pre Receiving") ||
                     getSelectedStation().Contains("Leija"))
@@ -638,6 +670,7 @@ namespace NFLInfoCenter.Forms
                         }
                     }
                 }
+
                //Receiving station is selected
                 else
                 {
@@ -661,18 +694,29 @@ namespace NFLInfoCenter.Forms
             }
             return null;
         }
+        /// <summary>
+        /// Adds the provided Receipt item to the listViewQueue.
+        /// </summary>
+        /// <param name="receipt"></param>
         private void addReceiptToPrintQueue(Receipt receipt)
         {
             if (re_initialList.Find(x => x.Id == receipt.Id) == null)
                 listViewQueue.Items.Add(receipt.Id.ToString());
         }
-
+        /// <summary>
+        /// Adds the provided PreReceipt item to the listViewQueue.
+        /// </summary>
+        /// <param name="prereceipt"></param>
         private void addPreReceiptToPrintQueue(PreReceipts prereceipt)
         {
             if (pre_initialList.Find(x => x.Id == prereceipt.Id) == null)
                 listViewQueue.Items.Add(prereceipt.Id.ToString());
         }
-
+        /// <summary>
+        /// Receives a list of objects (Receipts or PreReceipts) and adds all contained items
+        /// to listViewQueue.
+        /// </summary>
+        /// <param name="list"></param>
         private void addAllReceipts(List<Object> list)
         {
             if (IsReceiptList(list))
@@ -699,8 +743,12 @@ namespace NFLInfoCenter.Forms
                     Console.WriteLine("--- " + r.ToString());
                 }
             }
-            
         }
+        /// <summary>
+        /// Receives a List of PreReceipts and adds all contained items
+        /// to listViewQueue.
+        /// </summary>
+        /// <param name="list"></param>
         private void addAllReceipts(List<PreReceipts> list)
         {   
             foreach (PreReceipts r in list)
@@ -710,6 +758,11 @@ namespace NFLInfoCenter.Forms
                 listViewQueue.Items.Add(r.Id.ToString());
             }
         }
+        /// <summary>
+        /// Receives a List of Receipts and adds all contained items
+        /// to listViewQueue.
+        /// </summary>
+        /// <param name="list"></param>
         private void addAllReceipts(List<Receipt> list)
         {
             Console.WriteLine("3 adding receipts to receiptList and listViewQueue");
@@ -720,14 +773,11 @@ namespace NFLInfoCenter.Forms
                 Console.WriteLine("4 receipt " + r.ToString() + " added");
             }
         }
-        private void addAllPreReceipts(List<PreReceipts> list)
-        {
-            prereceiptList.AddRange(list);
-            foreach (PreReceipts r in list)
-            {
-                //listViewQueue.Items.Add(r.Id.ToString());
-            }
-        }
+        /// <summary>
+        /// Checks if the provided List of objects contains Receipts or PreReceipts.
+        /// </summary>
+        /// <param name="list"></param>
+        /// <returns>True if the list contains Receipts items, False otherwise.</returns>
         private bool IsReceiptList(List<object> list)
         {
             try
@@ -741,6 +791,13 @@ namespace NFLInfoCenter.Forms
                 return true; 
             }
         }
+        /// <summary>
+        /// Compares the given Receipt item with a List of Receipts and checks if the
+        /// Receipt is contained in the List.
+        /// </summary>
+        /// <param name="receipt"></param>
+        /// <param name="list"></param>
+        /// <returns>True if the Receipt is contained in the List, False otherwise.</returns>
         private bool listContainsReceipt(Receipt receipt, List<Receipt> list)
         {
             foreach(Receipt item in list)
@@ -751,6 +808,13 @@ namespace NFLInfoCenter.Forms
 
             return false;
         }
+        /// <summary>
+        /// Compares the given Receipt item with a LisView and checks if the
+        /// Receipt is contained in the ListView.
+        /// </summary>
+        /// <param name="receipt"></param>
+        /// <param name="listview"></param>
+        /// <returns>True if the Receipt is contained in the ListView, False otherwise.</returns>
         private bool listContainsReceipt(Receipt receipt, ListView listview)
         {
             foreach (ListViewItem item in listview.Items)
@@ -761,6 +825,13 @@ namespace NFLInfoCenter.Forms
             }
             return false;
         }
+        /// <summary>
+        ///  Compares the given PreReceipt item with a List of PreReceipts and checks if the
+        ///  PreReceipt is contained in the list.
+        /// </summary>
+        /// <param name="prereceipt"></param>
+        /// <param name="list"></param>
+        /// <returns>True if the PreReceipt is found in the list, False otherwise.</returns>
         private bool listContainsPreReceipts(PreReceipts prereceipt, List<PreReceipts> list)
         {
             foreach (PreReceipts item in list)
@@ -770,6 +841,13 @@ namespace NFLInfoCenter.Forms
             }
             return false;
         }
+        /// <summary>
+        ///  Compares the given PreReceipt item with a ListView and checks if the
+        ///  PreReceipt is contained in the ListView.
+        /// </summary>
+        /// <param name="prereceipt"></param>
+        /// <param name="listview"></param>
+        /// <returns>True if the PreReceipt is found in the ListView.</returns>
         private bool listContainsPreReceipts(PreReceipts prereceipt,ListView listview)
         {
             foreach (ListViewItem item in listview.Items)
@@ -780,6 +858,10 @@ namespace NFLInfoCenter.Forms
             }
             return false;
         }
+        /// <summary>
+        /// Queries dyson flexlink database and pulls all records (prereceipts or receipts) matching the given workstation configured 
+        /// in the UI. Records pulled and not added to listViewReceipts will be added to the listView.
+        /// </summary>
         private void updateReceipts()
         {
             List<Receipt> list_re = new List<Receipt>();
@@ -813,7 +895,6 @@ namespace NFLInfoCenter.Forms
             //Clearing current data from memory buffers
             listViewReceipts.Items.Clear();
             receiptList.Clear();
-            // here to check always
             prereceiptList.Clear();
 
             //Updating memory lists of receipts and prereceipts
@@ -837,6 +918,10 @@ namespace NFLInfoCenter.Forms
             }
             labelLastUpdate.Text = "Last update: " + DateTime.Now;
         }
+        /// <summary>
+        /// Updates global variable holding all receipts adding a batch of receipts.
+        /// </summary>
+        /// <param name="batch"></param>
         private void updateListWithList(List<Receipt> batch)
         {
             foreach (Receipt receipt in batch)
@@ -846,6 +931,10 @@ namespace NFLInfoCenter.Forms
             }
             
         }
+        /// <summary>
+        /// Updates global variable holding all prereceipts adding a batch of prereceipts.
+        /// </summary>
+        /// <param name="batch"></param>
         private void updateListWithList(List<PreReceipts> batch)
         {
             foreach (PreReceipts prereceipt in batch)
@@ -855,12 +944,20 @@ namespace NFLInfoCenter.Forms
             }
 
         }
+        /// <summary>
+        /// Sets a global variable holding the name of the configured workstation.
+        /// </summary>
+        /// <param name="selection"></param>
         private void setSelection(string selection)
         {
             this.selection = selection;
             comboBoxStation.SelectedIndex = comboBoxStation.FindStringExact(selection);
             MsgTypes.printme(MsgTypes.msg_success, "print source: " + getSelection(), this);
         }
+        /// <summary>
+        /// Activates a listViewReceipts item with text matching the provided string selection.
+        /// </summary>
+        /// <param name="selection"></param>
         private void highlightSelection(string selection)
         {
             if(selection != null)
@@ -870,30 +967,37 @@ namespace NFLInfoCenter.Forms
                     item.Selected = true;
             }
         }
+        /// <summary>
+        /// Handles get function of global variable selection.
+        /// </summary>
+        /// <returns></returns>
         private string getSelection()
         {
             return this.selection;
         }
+        /// <summary>
+        /// Reads the selection set on comboBoxStation and returns its value.
+        /// </summary>
+        /// <returns></returns>
         private string getSelectedStation()
         {
             return comboBoxStation.Text;
         }
+        /// <summary>
+        /// Receives a station name and sets the index of comboBoxStation to the item
+        /// that matches the its text to the name provided.
+        /// </summary>
+        /// <param name="name"></param>
         private void setSelectedStation(string name)
         {
             comboBoxStation.SelectedIndex = comboBoxStation.FindString(name);
         }
-        private void textBoxPrinterName_TextChanged(object sender, EventArgs e)
-        {
-            listViewQueue.Items.Clear();
-        }
-        private void comboBoxStation_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            listViewQueue.Items.Clear();
-            setSelection(comboBoxStation.Text);
-        }
         #endregion
 
         #region Cosmetics
+        /// <summary>
+        /// Sets location of the UI when form finishes loading.
+        /// </summary>
         private void setLocation()
         {
             if (Taskbar.Position.ToString() == "Bottom")
@@ -906,6 +1010,9 @@ namespace NFLInfoCenter.Forms
 
             }
         }
+        /// <summary>
+        /// Shows the hidden fields available in UI.
+        /// </summary>
         private void expandLeft()
         {
             listViewReceipts.Visible = true;
@@ -921,6 +1028,9 @@ namespace NFLInfoCenter.Forms
             this.Size = expand_left;
             buttonManualPop.Visible = true;
         }
+        /// <summary>
+        /// Changes shape of UI to display compact view.
+        /// </summary>
         private void compactView()
         {
             listViewReceipts.Visible = false;
@@ -936,6 +1046,9 @@ namespace NFLInfoCenter.Forms
             this.Size = compact_size;
             buttonManualPop.Visible = false;
         }
+        /// <summary>
+        /// Changes shape of UI to show all fields in form.
+        /// </summary>
         private void fullView()
         {
             listViewReceipts.Visible = true;
@@ -951,13 +1064,8 @@ namespace NFLInfoCenter.Forms
             this.Size = full_size;
             buttonManualPop.Visible = true;
         }
-
-
         #endregion
 
-        private void textBoxRMA2_KeyPress(object sender, KeyPressEventArgs e)
-        {
 
-        }
     }
 }
