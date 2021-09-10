@@ -24,7 +24,11 @@ namespace NFLInfoCenter.Classes
         public string Url { get; set; }
         public int size { get; set; }
 
-
+        /// <summary>
+        /// Creates a picturebox control contained in the give parent container.
+        /// Loads the image set on Gallery creation.
+        /// </summary>
+        /// <param name="parent"></param>
         public void createPhoto(FlowLayoutPanel parent)
         {
             frame = new PictureBox();
@@ -42,7 +46,12 @@ namespace NFLInfoCenter.Classes
             parent.Controls.Add(frame);
         }
 
-
+        /// <summary>
+        /// Creates a picturebox control contained in the give parent container.
+        /// Loads the image set on Gallery creation.
+        /// </summary>
+        /// <param name="parent"></param>
+        /// <param name="multiplyer"></param>
         public async void createPhotoAsync(FlowLayoutPanel parent, double multiplyer = 1)
         {
             frame = new PictureBox();
@@ -56,7 +65,11 @@ namespace NFLInfoCenter.Classes
             parent.Controls.Add(frame);
             parent.ScrollControlIntoView(frame);
         }
-
+        /// <summary>
+        /// Creates a PDF viewer object in the given parent container.
+        /// Loads the PDF url passed on Gallery creation.
+        /// </summary>
+        /// <param name="parent"></param>
         public async void createPDFViewAsync(FlowLayoutPanel parent)
         {
             pdf = new PdfViewer();
