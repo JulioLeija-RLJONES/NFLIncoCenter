@@ -32,14 +32,20 @@ namespace NFLInfoCenter.Classes
             return "id: " + this.Id + " sn: " + this.SerialNumber + " sku: " + this.Sku;
         }
 
-
+        /// <summary>
+        /// Checks if the receipt is Serialized or Non Serialized.
+        /// </summary>
+        /// <returns>True if receipt is serialized, False otherwise.</returns>
         public bool IsSerialized()
         {
             if (this.SerialNumber != "")
                 return true;
             return false;
         }
-
+        /// <summary>
+        /// Checks the value of the station field of the receipt.
+        /// </summary>
+        /// <returns>True if station field has a value, False otherwise.</returns>
         public bool HasStation()
         {
             if (this.station != "")
