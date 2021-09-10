@@ -31,7 +31,6 @@ namespace NFLInfoCenter.Classes
         {
             return "id: " + this.Id + " sn: " + this.SerialNumber + " sku: " + this.Sku;
         }
-
         /// <summary>
         /// Checks if the receipt is Serialized or Non Serialized.
         /// </summary>
@@ -51,11 +50,6 @@ namespace NFLInfoCenter.Classes
             if (this.station != "")
                 return true;
             return false;
-        }
-
-
-
-
-           
+        }   
     }
 }

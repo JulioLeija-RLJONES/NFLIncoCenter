@@ -12,6 +12,10 @@ namespace NFLInfoCenter.Classes
         private System.Windows.Forms.Form commingFrom;
 
         private DysonDB dyson;
+        /// <summary>
+        /// Helps with mapping of the hostname to a station name through a preload stationname-hostname map.
+        /// </summary>
+        /// <param name="commingFrom"></param>
         public Station(System.Windows.Forms.Form commingFrom)
         {
             this.commingFrom = commingFrom;
