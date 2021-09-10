@@ -13,7 +13,10 @@ namespace NFLInfoCenter.Classes
     {
         [DllImport("wininet.dll")]
         private extern static bool InternetGetConnectedState(out int Description, int ReservedValue);
-        //Creating a function that uses the API function...  
+        /// <summary>
+        /// Checks if internet connection is available for the tool.
+        /// </summary>
+        /// <returns></returns>
         public static bool IsConnectedToInternet()
         {
             int Desc;
