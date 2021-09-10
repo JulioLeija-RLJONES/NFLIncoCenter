@@ -91,6 +91,9 @@ namespace NFLInfoCenter.Forms
 
 
         #region Logic
+        /// <summary>
+        /// Detects if user changes radio buttons to select between MSFT and Dyson options.
+        /// </summary>
         private void projectChanged()
         {
             if (radioButtonDyson.Checked)
@@ -102,6 +105,9 @@ namespace NFLInfoCenter.Forms
                 setStationsList(mstfStations);
             }
         }
+        /// <summary>
+        /// Updates UI message with station current count.
+        /// </summary>
         private void updateCount()
         {
             try
@@ -129,91 +135,38 @@ namespace NFLInfoCenter.Forms
                     {
                         label_ReceiptsCount.Text = "Select project";
                     }
-
                 }
-                
             }
             catch(Exception ex)
             {
                 MsgTypes.printme(MsgTypes.msg_failure, ex.Message, this);
             }
-          
         }
-
-      
         #endregion
 
         #region Database
-
-        private List<string> GetWorkstations()
-        {
-            List<string> workstations = new List<string>();
-
-
-
-            return workstations;
-        }
-        private int getPreReceiptsCount(string stationName)
-        {
-            int prereceiptscount = 0;
-
-            #region Query Definition
-            flcommand.CommandText = "SELECT * FROM( " +
-                                    "SELECT   " +
-                                    "'PreReceived Time' = DATEADD(HOUR,-6,CAST(PRERECEIVING.CreatedOn as smalldatetime)), " +
-                                    "'RMA' = ORDERS.RMANumber, " +
-                                    "'Channel' =  OT.Name, " +
-                                    "'PreReceiptActive' = PRERECEIVING.IsActive, " +
-                                    "'IsBlindReceipt' = ORDERS.IsMisMatchRMA " +
-                                    "FROM tbl_JobManage_RMA_PreReceiving PRERECEIVING " +
-                                    "INNER JOIN tbl_JobManage_Orders ORDERS ON PRERECEIVING.OrderID = ORDERS.OrderId  " +
-                                    "INNER JOIN tbl_Master_OrderType OT ON ORDERS.OrderTypeID = OT.OrderTypeID  " +
-                                    "INNER JOIN tbl_Master_Status MS ON ORDERS.StatusID = MS.StatusID  " +
-                                    ") AS REPORT " +
-                                    "WHERE REPORT.[PreReceived Time] " +
-                                    "BETWEEN DATEADD(DAY,0,CAST(DATEADD(HOUR,-6,GETDATE()) AS DATE)) AND DATEADD(DAY,1,CAST(DATEADD(HOUR,-6,GETDATE()) AS DATE))  " +
-                                    "AND DATEPART(HOUR,report.[PreReceived Time]) = DATEPART(HOUR,DATEADD(DAY,0,CAST(DATEADD(HOUR,-6,GETDATE()) AS smalldatetime)))  " +
-                                    "AND REPORT.PreReceiptActive = 1 " +
-                                    "AND REPORT.IsBlindReceipt = 0 ";
-            #endregion
-
-
-            Console.WriteLine("******************************");
-            Console.WriteLine("******************************");
-            Console.WriteLine(flcommand.CommandText);
-            Console.WriteLine("******************************");
-            Console.WriteLine("******************************");
-
-
-            flconn.Open();
-
-            flreader = flcommand.ExecuteReader();
-
-            while (flreader.Read())
-            {
-
-                prereceiptscount += 1;
-            }
-
-            flconn.Close();
-            Console.WriteLine("- counts recovered = " + prereceiptscount);
-            return prereceiptscount;
-        }
+        /// <summary>
+        /// Calls query consult from dyson flexlink database to pull reciepts from matching stationName and performed during the current hour.
+        /// </summary>
+        /// <param name="stationName"></param>
+        /// <returns>The quantity of receipts performed by stationName during the current hour.</returns>
         private int dyson_getReceiptsCount(string stationName)
         {
             return dataDB.getStationReceiptsCount(stationName);
         }
+        /// <summary>
+        /// Calls query consult from msft flexlink database to pull reciepts from matching stationName and performed during the current hour.
+        /// </summary>
+        /// <param name="stationName"></param>
+        /// <returns>The quantity of receipts performed by stationName during the current hour.</returns>
         private int msft_getReceiptsCount(string stationName)
         {
             return mdataDB.getStationReceiptsCount(stationName);
         }
-
-
-
         #endregion
 
-        #region Controls
 
+        #region Controls
         private void radioButtonDyson_CheckedChanged(object sender, EventArgs e)
         {
             projectChanged();
@@ -230,7 +183,6 @@ namespace NFLInfoCenter.Forms
                 comboBoxStation.Items.Add(station);
             }
         }
-
         private string getStationName(bool shortname = false)
         {
             string name = comboBoxStation.Text;
@@ -279,16 +231,6 @@ namespace NFLInfoCenter.Forms
         {
             commingFrom.Show();
             this.Close();
-        }
-
-
-
-        #endregion
-
-        #region Cosmetics
-        private void resizeLayout()
-        {
-
         }
         #endregion
 
