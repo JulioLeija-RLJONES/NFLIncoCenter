@@ -84,6 +84,5 @@ namespace NFLInfoCenter.Classes
             
         }
 
-
     }
 }

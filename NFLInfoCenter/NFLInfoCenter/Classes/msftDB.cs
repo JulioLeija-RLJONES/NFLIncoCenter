@@ -15,26 +15,28 @@ namespace NFLInfoCenter.Classes
         {
             this.commingFrom = commingFrom;
         }
-
+        /// <summary>
+        /// Queries MSFT flexlink database and pulls the receipts of the given stationName.
+        /// </summary>
+        /// <param name="stationName"></param>
+        /// <returns>The total receipts found for stationName in the current hour.</returns>
         public int getStationReceiptsCount(string stationName)
         {
             int count = 0;
             string sql = Queries.getQuery("msft_getStationReceiptsCount");
             sql = string.Format(sql, stationName);
-
             Console.WriteLine("*************** formated query *******");
             Console.WriteLine(sql);
             Console.WriteLine("*************** formated query *******");
-
             var rows = ExecuteReader(sql);
             Console.WriteLine("total rows obtained: " + rows.Count);
-
-            
             count = rows.Count;
-
             return count;
         }
-
+        /// <summary>
+        /// Queries msft flexlink database and pulls all active station names.
+        /// </summary>
+        /// <returns>An array of strings containing all active workstation names.</returns>
         public string[] getActiveStations()
         {
             List<string> list = new List<string>();
@@ -56,7 +58,6 @@ namespace NFLInfoCenter.Classes
                     Console.WriteLine("adding new station to list:" + data.FieldValues[0].ToString());
                 }
             }
-
             return list.ToArray();
         }
 
