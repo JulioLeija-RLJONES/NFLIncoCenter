@@ -78,6 +78,10 @@ namespace NFLInfoCenter.Forms
         #endregion
 
         #region Logic
+        /// <summary>
+        /// Queries dyson flexlink database and pulls all images files url, loads the images
+        /// files into Gallery objects.
+        /// </summary>
         private void getPicturesAction()
         {
             string crtieria = getSerachCriteria();
@@ -120,6 +124,10 @@ namespace NFLInfoCenter.Forms
                 printme(2, "no receipts recovered");
             }
         }
+        /// <summary>
+        /// Queries dyson flexlink database and pulls all PDF files url, loads the PDF
+        /// files into PDFViewer objects.
+        /// </summary>
         private void getPDFAction()
         {
             string crtieria = getSerachCriteria();
@@ -128,13 +136,10 @@ namespace NFLInfoCenter.Forms
                 printme(2, "please enter search criteria.");
                 return;
             }
-
             var prereceipt = DB.getPreReceiptData(getSerachCriteria());
             if(prereceipt.Url != null)
             {
-
                 printme(1, "prereceipt " + prereceipt.OrderNumber);
-
                 foreach(string url in prereceipt.Url)
                 {
                     if (url.Contains("pdf"))
@@ -151,9 +156,7 @@ namespace NFLInfoCenter.Forms
                         photo.location = new Point(0, 0);
                         photo.createPhotoAsync(this.flowLayoutPanelGallery);
                     }
-                   
                 }
-
                 resizePictures();
             }
             else 
@@ -161,6 +164,9 @@ namespace NFLInfoCenter.Forms
                 printme(2, "no prereceiving files found with given criteria:" + crtieria);
             }
         }
+        /// <summary>
+        /// 
+        /// </summary>
         private void updateGalleryAction()
         {
             flowLayoutPanelGallery.Controls.Clear();
@@ -169,10 +175,17 @@ namespace NFLInfoCenter.Forms
             textBoxCriteria.Select();
             textBoxCriteria.SelectAll();
         }
+        /// <summary>
+        /// Removes all Gallery items added to main panel.
+        /// </summary>
         private void resetForm()
         {
             flowLayoutPanelGallery.Controls.Clear();
         }
+        /// <summary>
+        /// Queries dyson flexlink database and pulls the latest receipts recorded and their 
+        /// corresponding image URL.
+        /// </summary>
         private  async void setPlayListAsync()
         {
             if (!Networking.IsConnectedToInternet())
@@ -204,6 +217,9 @@ namespace NFLInfoCenter.Forms
                 setPlayListAsync();
             }
         }
+        /// <summary>
+        /// Sets the first set of 10 images to display in the main panel.
+        /// </summary>
         private async void initRoller()
         {
             if (listViewReceipts.Items.Count > 0)
@@ -225,6 +241,9 @@ namespace NFLInfoCenter.Forms
                 MsgTypes.printme(MsgTypes.msg_failure, "There are no images today to display.", this);
             }
         }
+        /// <summary>
+        /// Uses FIFO logic to display image of all receipts queued in listViewReceipts.
+        /// </summary>
         private async void rollPictures()
         {
             index += 1;
@@ -252,10 +271,40 @@ namespace NFLInfoCenter.Forms
             
             printme(1, "moving index:" + index.ToString());
         }
+        /// <summary>
+        /// The function lanuches a thread inside a function for a later check if is still alive.
+        /// Unused function.
+        /// </summary>
         private void safetyCheck()
         {
             while (true) ;
         }
+        /// <summary>
+        /// Resizes all contained Gallery items in main panel to a given size.
+        /// </summary>
+        public void resizePictures()
+        {
+            foreach (Control c in flowLayoutPanelGallery.Controls)
+            {
+                if (checkBoxInspectionMode.Checked)
+                {
+
+                }
+                else
+                {
+                    c.Size = new Size(Convert.ToInt32(flowLayoutPanelGallery.Width * 0.48),
+                        Convert.ToInt32(flowLayoutPanelGallery.Width * 0.48 * .6));
+                }
+            }
+        }
+        #endregion
+
+        #region Machine Learning. Image Classification.
+        /// <summary>
+        /// Obtaines all image files from given folder.
+        /// </summary>
+        /// <param name="folder"></param>
+        /// <returns>A list of strings containing all image file names in given folder.</returns>
         private List<string> getListImages(string folder)
         {
             List<string> list = new List<string>();
@@ -264,6 +313,11 @@ namespace NFLInfoCenter.Forms
             list.AddRange(Directory.GetFiles(folder,"*.png"));
             return list;
         }
+        /// <summary>
+        /// Loads a list of strings in a ListView item.
+        /// </summary>
+        /// <param name="list"></param>
+        /// <param name="view"></param>
         private void loadImageList(List<string> list,ListView view)
         {
             foreach(string item in list)
@@ -272,6 +326,10 @@ namespace NFLInfoCenter.Forms
             }
             labelLoadedImages.Text = "Loaded images: " + view.Items.Count;
         }
+        /// <summary>
+        /// Gets and shows the next picture in the listViewImages listView.
+        /// </summary>
+        /// <returns>The name of next picture, shown in main panel.</returns>
         private string nextImage()
         {
             if (listViewImages.Items.Count == 0)
@@ -306,42 +364,45 @@ namespace NFLInfoCenter.Forms
             listViewImages.Items[cindex].Selected = true;
             return next;
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="imageclass"></param>
+        /// <returns></returns>
         private bool classifyImageAsync(string name, string imageclass)
         {
             string tagsFileName = getImageFolder() + "tags.tsv";
             File.AppendAllText(tagsFileName, name + "  " + imageclass + Environment.NewLine);
             return true;
         }
-        
-
-
+  
         #endregion
 
 
 
+
+
         #region Controls
+        private void buttonLoadImages_Click(object sender, EventArgs e)
+        {
+            if (getImageFolder() == "")
+            {
+                MsgTypes.printme(MsgTypes.msg_failure, "Set images folder.", this);
+            }
+            else
+            {
+                loadImageList(getListImages(getImageFolder()), listViewImages);
+                nextImage();
+            }
+
+        }
         private void buttonNext_Click(object sender, EventArgs e)
         {
             nextImage();
           
         }
-        private string getImageFolder()
-        {
-            return textBoxPath.Text + "\\";
-        }
-        private void buttonLoadImages_Click(object sender, EventArgs e)
-        {
-            if(getImageFolder() == "")
-            {
-                MsgTypes.printme(MsgTypes.msg_failure, "Set images folder.",this);
-            }
-            else
-            {
-                loadImageList(getListImages(getImageFolder()),listViewImages);
-                nextImage();
-            }
 
-        }
         private void timer1_Tick(object sender, EventArgs e)
         {
             rollPictures();
@@ -366,20 +427,13 @@ namespace NFLInfoCenter.Forms
         {
             return textBoxCriteria.Text;
         }
-        public void resizePictures()
+        /// <summary>
+        /// Reads text contained in textBoxPath. 
+        /// </summary>
+        /// <returns>A path built with textBoxPath contents.</returns>
+        private string getImageFolder()
         {
-            foreach (Control c in flowLayoutPanelGallery.Controls)
-            {
-                if (checkBoxInspectionMode.Checked)
-                {
-
-                }
-                else
-                {
-                    c.Size = new Size(Convert.ToInt32(flowLayoutPanelGallery.Width * 0.48),
-                        Convert.ToInt32(flowLayoutPanelGallery.Width * 0.48 * .6));
-                }
-            }
+            return textBoxPath.Text + "\\";
         }
         private void FrmPictureViewer_Resize(object sender, EventArgs e)
         {
@@ -495,7 +549,6 @@ namespace NFLInfoCenter.Forms
                 default:
                     break;
             }
-
         }
         private void resetButtonColor(PictureBox sender)
         {
@@ -518,11 +571,6 @@ namespace NFLInfoCenter.Forms
         }
         #endregion
 
-
-        #region Network
-      
-
-        #endregion
 
 
     }
