@@ -11,20 +11,19 @@ namespace NFLInfoCenter.Classes
     public static class Queries
     {
 
+        /// <summary>
+        /// Receives a name representing the file name containing the desired query statement.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns>A SQL statement.</returns>
         public static string getQuery(string name)
-        {
-            //Console.WriteLine("query name: " + name);
-            //string[] files = Directory.GetFiles(Directory.GetCurrentDirectory() + "\\Queries\\");
-            //string path = System.Windows.Forms.Application.ExecutablePath;
+        {            
             string path = AppContext.BaseDirectory;
             path = path.Replace("NFLInfoCenter.exe", "");
-
             string[] files = Directory.GetFiles(path + "\\Queries\\");
             string sql = "";
-
             foreach (string file in files)
             {
-                //Console.WriteLine("file name: " + file.ToString());
                 if (Path.GetFileName(file) == name + ".txt" )
                 {
                     sql = System.IO.File.ReadAllText(file);
@@ -38,8 +37,6 @@ namespace NFLInfoCenter.Classes
             {
                 Console.WriteLine("query obtained");
             }
-            //Console.WriteLine(sql);
-
             return sql;
         }
     }
