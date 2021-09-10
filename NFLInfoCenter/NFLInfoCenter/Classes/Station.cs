@@ -14,6 +14,7 @@ namespace NFLInfoCenter.Classes
         private DysonDB dyson;
         /// <summary>
         /// Helps with mapping of the hostname to a station name through a preload stationname-hostname map.
+        /// Mainly working in the printing label features of PreReceiving and Receiving.
         /// </summary>
         /// <param name="commingFrom"></param>
         public Station(System.Windows.Forms.Form commingFrom)
