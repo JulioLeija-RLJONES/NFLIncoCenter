@@ -108,7 +108,8 @@ namespace NFLInfoCenter.Classes
                 {
                     datalist.Add(new string[] { data.FieldValues[0].ToString(),
                                                 data.FieldValues[1].ToString(),
-                                                data.FieldValues[2].ToString()});
+                                                data.FieldValues[2].ToString(),
+                                                data.FieldValues[3].ToString()});
                 }
             }
                 return datalist;

@@ -217,19 +217,12 @@ namespace NFLInfoCenter.Forms
                 if (CheckForInternetConnection())
                 {
                     MsgTypes.printme(MsgTypes.msg_success, "loading printer tool...", this);
-                   
                     printer = new FrmReceiptsPrinter(this);
-
-                    
-
                 }
                 else
-                {
-
+                { 
                     timer1.Enabled = true;
                     MsgTypes.printme(msg_failure, "initiating reconnection...", this);
-
-
                 }
             }
             MsgTypes.printme(msg_failure, "is debug mode: " + isDebugMode().ToString(), this);

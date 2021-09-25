@@ -45,7 +45,6 @@ namespace NFLInfoCenter.Classes
             try
             {
            
-
                 if (Connection != null)
                     Connection.Open();
             }catch(Exception ex)

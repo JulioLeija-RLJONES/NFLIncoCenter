@@ -43,14 +43,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="NFLInfoCenter.exe" size="3819992">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="NFLInfoCenter.exe" size="3817432">
       <assemblyIdentity name="NFLInfoCenter" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>GfKPaicbSeC6amb1C3xtsN3gMmPKM6U5hKpoK/amy2Q=</dsig:DigestValue>
+        <dsig:DigestValue>haYSI/EtZVCA72IjeMGJdMt2wmA///7DUyFMoHvUzQw=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -240,13 +240,13 @@
       <dsig:DigestValue>zTSq58tNiXwRdGb0SiXrYcGBh6iBmtpZyx7bIOBgTEU=</dsig:DigestValue>
     </hash>
   </file>
-  <file name="Queries\getOrderPreloadedData.txt" size="403">
+  <file name="Queries\getOrderPreloadedData.txt" size="671">
     <hash>
       <dsig:Transforms>
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-      <dsig:DigestValue>H5NvgTzVO2sXtiITZNO5hDeY3QIepvZufV1/DYPVGiE=</dsig:DigestValue>
+      <dsig:DigestValue>+rRHzULkeyIUD3HdTgGbwZorQKkSTOXeqPkaraVl80c=</dsig:DigestValue>
     </hash>
   </file>
   <file name="Queries\getPreLoadedData.txt" size="490">

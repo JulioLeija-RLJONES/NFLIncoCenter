@@ -64,10 +64,11 @@ namespace NFLInfoCenter.Forms
         {
             DataGridView dv = dataGridViewOrderPreloadData;
             initDefaultsDataGrid(dv);
-            dv.ColumnCount = 3;
+            dv.ColumnCount = 4;
             dv.Columns[0].Name = "Pre Loaded Order";
             dv.Columns[1].Name = "Pre Loaded SN";
             dv.Columns[2].Name = "Pre Received On";
+            dv.Columns[3].Name = "Serial PreLoaded";
 
             foreach (DataGridViewColumn col in dv.Columns)
             {
