@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Net;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -16,7 +17,6 @@ namespace NFLInfoCenter.Forms
 {
     public partial class FrmMenu : Form
     {
-
         private int msg_success = 1;
         private int msg_failure = 2;
         private int msg_nottype = 0;
@@ -39,9 +39,16 @@ namespace NFLInfoCenter.Forms
 
             setupToolTips();
 
-            if (!isDebugMode())
+            
+
+            if (!isDebugMode() && System.Deployment.Application.ApplicationDeployment.IsNetworkDeployed)
             {
                 labelVersion.Text = System.Deployment.Application.ApplicationDeployment.CurrentDeployment.CurrentVersion.ToString();
+            }
+            else
+            {
+                labelVersion.Text = Assembly.GetExecutingAssembly().GetLinkerTime().ToString();
+                Console.WriteLine(">>>> " + labelVersion.Text);
             }
 
         }
@@ -119,6 +126,39 @@ namespace NFLInfoCenter.Forms
         #endregion
 
 
+        #region Actions
+        public async Task<int> ActionLaunchPrinter()
+        {
+            int startattempts = 0;
+            if (CheckForInternetConnection())
+            {
+                MsgTypes.printme(MsgTypes.msg_success, "loading printer tool...", this);
+                printer = new FrmReceiptsPrinter(this);
+
+                if (printer.IsDisposed)
+                {
+                    startattempts += 1;
+                    MsgTypes.printme(MsgTypes.msg_failure, "Printer did not start and was disposed. attempts: " + startattempts, this);
+                    //timer1.Enabled = true;
+                    await ActionLaunchPrinter();
+                    return 1;
+                }
+                else
+                {
+                    MsgTypes.printme(MsgTypes.msg_success, "printer tool up and running.", this);
+                    return 1;
+                }
+            }
+            else
+            {
+                timer1.Enabled = true;
+                MsgTypes.printme(msg_failure, "initiating reconnection...", this);
+                return 1;
+            }
+        }
+        #endregion
+
+
         #region Controls
         private void dataViewAccess_MouseClick(object sender, MouseEventArgs e)
         {
@@ -145,6 +185,7 @@ namespace NFLInfoCenter.Forms
         private void pictureBoxPrinterView_Click(object sender, EventArgs e)
         {
             MsgTypes.printme(MsgTypes.msg_success, "loading printer tool...", this);
+            
             printer.Show();
 
             this.WindowState = FormWindowState.Minimized;
@@ -192,7 +233,7 @@ namespace NFLInfoCenter.Forms
                                     new Bitmap(Properties.Resources.printerImage),
                                     new Bitmap(Properties.Resources.printerImageHighlighted)); 
         }
-        private void AppMenu_Load(object sender, EventArgs e)
+        private async void AppMenu_Load(object sender, EventArgs e)
         {
             
             MsgTypes.printme(MsgTypes.msg_success,"application executable path: " + Application.ExecutablePath,this);
@@ -214,18 +255,9 @@ namespace NFLInfoCenter.Forms
             }
             else
             {
-                if (CheckForInternetConnection())
-                {
-                    MsgTypes.printme(MsgTypes.msg_success, "loading printer tool...", this);
-                    printer = new FrmReceiptsPrinter(this);
-                }
-                else
-                { 
-                    timer1.Enabled = true;
-                    MsgTypes.printme(msg_failure, "initiating reconnection...", this);
-                }
+                await ActionLaunchPrinter();
             }
-            MsgTypes.printme(msg_failure, "is debug mode: " + isDebugMode().ToString(), this);
+            //MsgTypes.printme(msg_failure, "is debug mode: " + isDebugMode().ToString(), this);
 
 
         }
@@ -370,7 +402,6 @@ namespace NFLInfoCenter.Forms
             this.Hide();
             e.Cancel  = true;
         }
-
         private void timer1_Tick(object sender, EventArgs e)
         {
             if (CheckForInternetConnection())

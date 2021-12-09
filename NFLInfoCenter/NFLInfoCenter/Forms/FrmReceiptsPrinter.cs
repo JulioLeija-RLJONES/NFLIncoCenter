@@ -50,7 +50,18 @@ namespace NFLInfoCenter.Forms
              * Instanting data source of Dyson data
              */
             dysonData = new DysonDB(commingFrom);
-            dysonData.Open();
+            bool dysonDBOn = dysonData.Open();
+            if (!dysonDBOn)
+            {
+                MsgTypes.printme(MsgTypes.msg_failure, "could not connect to dyson data source.", commingFrom);
+                Console.WriteLine("could not connect to dyson data source.");
+                this.Close();
+                return;
+            }
+            else
+            {
+                Console.WriteLine("dyson data source reached.");
+            }
 
             /*
              * Instantiate Printer class object
@@ -246,9 +257,20 @@ namespace NFLInfoCenter.Forms
         {
             try
             {
+                if(this.selection == null || this.selection =="")
+                {
+                    MsgTypes.printme(MsgTypes.msg_nottype, "please select a station in the dropdown list.", this);
+                    highlighDropdownList(comboBoxStation);
+                    return;
+                }
+                else
+                {
+                    resetDropdownList(comboBoxStation);
+                }
                 updateReceipts();
                 highlightSelection(this.selection);   
-                if(selection.Contains("Pre Receiving") || selection.Contains("Leija"))
+               
+                if(this.selection.Contains("Pre Receiving") || this.selection.Contains("Leija"))
                 {
                     if (pre_initialList.Count == 0)
                         pre_initialList.AddRange(fullPreReceiptListCollected);
@@ -310,12 +332,11 @@ namespace NFLInfoCenter.Forms
                 if(checkBoxActivatePrints.Checked & checkBoxAutomatic.Checked)
                 {
                     popOldestQueue();
-                    
                 }
             }
             catch (Exception ex)
             {
-                string message = "db connection lost, restoring...";
+                string message = "db connection lost, restoring..." + this.selection;
                 MsgTypes.printme(MsgTypes.msg_success, message, this);
                 Console.WriteLine(message);
 
@@ -335,13 +356,19 @@ namespace NFLInfoCenter.Forms
         }
         private void checkBoxActivatePrints_CheckedChanged(object sender, EventArgs e)
         {
-            if (selection.Contains("Pre Receiving") || selection.Contains("Leija"))
+            try
             {
-                pre_initialList.AddRange(fullPreReceiptListCollected);
-            }
-            else
+                if (selection.Contains("Pre Receiving") || selection.Contains("Leija"))
+                {
+                    pre_initialList.AddRange(fullPreReceiptListCollected);
+                }
+                else
+                {
+                    re_initialList.AddRange(fullReceiptListCollected);
+                }
+            }catch(Exception ex)
             {
-                re_initialList.AddRange(fullReceiptListCollected);
+                MsgTypes.printme(MsgTypes.msg_failure, "Exception: station name not set",this);
             }
         }
         private void button1_Click(object sender, EventArgs e)
@@ -419,7 +446,8 @@ namespace NFLInfoCenter.Forms
         }
         private string getConfiguredStation()
         {
-            if(comboBoxStation.SelectedIndex == -1)
+            
+            if (comboBoxStation.SelectedIndex == -1)
             {
                 return "all";
             }
@@ -870,15 +898,8 @@ namespace NFLInfoCenter.Forms
             string station = getConfiguredStation();
             if (station == "all")
             {
-                if(station.Contains("Pre Receiving") || station.Contains("Leija"))
-                {
-                    Console.WriteLine("getting prereceipts with station");
-                    list_pre = dysonData.getPreReceiptsWindow();
-                }
-                else
-                {
-                    list_re = dysonData.getReceiptsWindow();
-                }
+                MsgTypes.printme(MsgTypes.msg_nottype, "waiting for station selection.", this);
+                return;
             }
             else
             {
@@ -898,6 +919,7 @@ namespace NFLInfoCenter.Forms
             prereceiptList.Clear();
 
             //Updating memory lists of receipts and prereceipts
+            
             if (station.Contains("Pre Receiving") || station.Contains("Leija"))
             {
                 foreach (PreReceipts prereceipt in list_pre)
@@ -995,6 +1017,19 @@ namespace NFLInfoCenter.Forms
         #endregion
 
         #region Cosmetics
+        private void highlighDropdownList(Control control)
+        {
+            if(control.BackColor != Color.Orange)
+            {
+                control.Focus();
+                control.BackColor = Color.Orange;
+            }
+        }
+        private void resetDropdownList(Control control)
+        {
+            control.BackColor = SystemColors.MenuText;
+        }
+
         /// <summary>
         /// Sets location of the UI when form finishes loading.
         /// </summary>

@@ -40,9 +40,15 @@ namespace NFLInfoCenter.Classes
         }
         public void setName()
         {
-            this.name = dyson.getStationName(this.hostname);
+            //this.name = dyson.getStationName(this.hostname);
             MsgTypes.printme(MsgTypes.msg_success, "hostname: " + this.hostname + " name: " + this.name,commingFrom);
+            Console.WriteLine("");
+            Console.WriteLine("");
+            Console.WriteLine("hostname: " + this.hostname + " name: " + this.name);
+            Console.WriteLine("");
+            Console.WriteLine("");
         }
+    
         
     }
 

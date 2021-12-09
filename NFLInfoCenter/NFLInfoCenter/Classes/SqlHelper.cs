@@ -21,17 +21,8 @@ namespace NFLInfoCenter.Classes
 
         public SqlHelper(string connectionName)
         {
-            if(connectionName == "microsoft")
-            {
-                Connection = new SqlConnection(settings[2].ConnectionString.ToString());
-            }
-            else
-            {
-                Connection = new SqlConnection(settings[1].ConnectionString.ToString());
-            }
-            Console.WriteLine("using connection: " + Connection.Database);
-            Console.WriteLine("passed connection name" + connectionName.ToString());
-            
+            ConnStrMgr = new ConnectionStringManager(connectionName);
+            Connection = new SqlConnection(ConnStrMgr.ToString());
         }
 
         public void Dispose()
@@ -40,17 +31,26 @@ namespace NFLInfoCenter.Classes
                 Connection.Close();
         }
 
-        public void Open()
+        public bool Open()
         {
             try
             {
            
                 if (Connection != null)
+                {
                     Connection.Open();
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+
             }catch(Exception ex)
             {
                 string msg = "experiencing connection issues..";
                 Console.WriteLine(msg);
+                return false;
             }
         }
 
