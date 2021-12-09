@@ -47,8 +47,7 @@ namespace NFLInfoCenter.Forms
             }
             else
             {
-                labelVersion.Text = Assembly.GetExecutingAssembly().GetLinkerTime().ToString();
-                Console.WriteLine(">>>> " + labelVersion.Text);
+                labelVersion.Text = versionKeeper();
             }
 
         }
@@ -60,6 +59,15 @@ namespace NFLInfoCenter.Forms
             tip.SetToolTip(this.pictureBoxGalleryAccess, "Click to open Picture Capture tool");
             tip.SetToolTip(this.dataViewAccess, "Click to open serial and order traceability tool");
         }
+        public string versionKeeper()
+        {
+            string[] version = { "version: dec 9 2021",
+                                "Solution modified to remove db_elptest in azure dependency",
+                                "Adding StandAlone Installer project to solution",
+                                "Adding manual versioning keeper."};
+            return version[0];
+        }
+
         #endregion
 
         #region Logic
