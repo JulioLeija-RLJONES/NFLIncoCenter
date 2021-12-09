@@ -469,6 +469,7 @@ namespace NFLInfoCenter.Forms
         private void buttonSaveConfig_Click(object sender, EventArgs e)
         {
             setPrinterName(getPrinterName());
+            station.UpdateStationName(getConfiguredStation());
         }
         private void buttonPullReceipts_Click(object sender, EventArgs e)
         {

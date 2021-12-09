@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Configuration;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
@@ -38,8 +39,6 @@ namespace NFLInfoCenter.Forms
             prompt.BackColor = backColor;
 
             setupToolTips();
-
-            
 
             if (!isDebugMode() && System.Deployment.Application.ApplicationDeployment.IsNetworkDeployed)
             {
@@ -266,6 +265,18 @@ namespace NFLInfoCenter.Forms
                 await ActionLaunchPrinter();
             }
             //MsgTypes.printme(msg_failure, "is debug mode: " + isDebugMode().ToString(), this);
+
+            var configFile = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+            var settings = configFile.AppSettings.Settings;
+
+            Console.WriteLine("*****************************************************");
+            Console.WriteLine("*****************************************************");
+            foreach (var section in configFile.Sections)
+            {
+                Console.WriteLine("section " + section.ToString());
+                
+            }
+            
 
 
         }

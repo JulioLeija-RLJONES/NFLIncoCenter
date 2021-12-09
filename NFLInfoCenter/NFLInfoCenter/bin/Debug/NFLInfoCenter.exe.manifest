@@ -43,14 +43,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="NFLInfoCenter.exe" size="3821016">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="NFLInfoCenter.exe" size="3822552">
       <assemblyIdentity name="NFLInfoCenter" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>CptgJTdmJfOV0/Myye1jj8pg9XN5Y0QjsPWEpAqZyvA=</dsig:DigestValue>
+        <dsig:DigestValue>gWrcNOrIPZDSuL2QGAtkGTFaln5kb+V8WIqJAZ9gGiA=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -159,13 +159,13 @@
       <dsig:DigestValue>Kr/hd2axeu4tNdTB6oBYRitkVp4goZ7YAXyApYc5fQ4=</dsig:DigestValue>
     </hash>
   </file>
-  <file name="NFLInfoCenter.exe.config" size="957">
+  <file name="NFLInfoCenter.exe.config" size="998">
     <hash>
       <dsig:Transforms>
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-      <dsig:DigestValue>hXnTNXkf613TbUA/ldc+465ZxDhIGKmO3B1u6QYbG7o=</dsig:DigestValue>
+      <dsig:DigestValue>wGT05rNF7kmgFWQujRJ4dHiB2oqJm6yLNaa3S8b9EOA=</dsig:DigestValue>
     </hash>
   </file>
   <file name="Queries\dyson_getActiveStations.txt" size="241">
